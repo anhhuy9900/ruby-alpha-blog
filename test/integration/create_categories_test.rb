@@ -1,6 +1,16 @@
+require 'test_helper'
+
 class CreateCategoriesTest < ActionDispatch::IntegrationTest
 
+  def setup
+
+    @user = User.create(username: "john", email: "john@example.com", password: "password", admin: true)
+
+  end
+
   test "get new category form and create category" do
+
+    sign_in_as(@user, "password")
 
     get new_category_path
 
@@ -20,6 +30,8 @@ class CreateCategoriesTest < ActionDispatch::IntegrationTest
 
   test "invalid category submission results in failure" do
 
+    sign_in_as(@user, "password")
+
     get new_category_path
 
     assert_template 'categories/new'
@@ -37,5 +49,13 @@ class CreateCategoriesTest < ActionDispatch::IntegrationTest
     assert_select 'div.panel-body'
 
   end
+
+end
+
+Add sign_in_user method to test_helper.rb file under test folder:
+
+def sign_in_as(user, password)
+
+  post login_path, session: {email: user.email, password: password}
 
 end
